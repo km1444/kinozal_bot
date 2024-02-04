@@ -38,7 +38,7 @@ async def start_app(context: ContextTypes.DEFAULT_TYPE):
 async def start_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Add a job to the queue."""
     chat_id = update.effective_message.chat_id
-    context.job_queue.run_repeating(add_data, 60000, chat_id=chat_id)
+    context.job_queue.run_repeating(add_data, 36000, chat_id=chat_id)
     text = "App start succesfull!"
     await update.effective_message.reply_text(text)
 
