@@ -27,10 +27,10 @@ url_adr = 'https://qmxnntikcog.kinozal4me.info/top.php?sid=fP7U4sk9&j=&t=1&d=0&k
 #     ['/start']], resize_keyboard=True)
 
 
-async def start_app(context: ContextTypes.DEFAULT_TYPE):
-    job = context.job
+async def start_app(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update.effective_message.chat_id
     await context.bot.send_message(
-        chat_id=job.chat_id,
+        chat_id=chat_id,
         text="I'm a bot, please talk to me!"
     )
 
@@ -38,12 +38,12 @@ async def start_app(context: ContextTypes.DEFAULT_TYPE):
 async def start_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Add a job to the queue."""
     chat_id = update.effective_message.chat_id
-    context.job_queue.run_repeating(add_data, 36000, chat_id=chat_id)
+    context.job_queue.run_repeating(add_data, 60, chat_id=chat_id)
     text = "App start succesfull!"
     await update.effective_message.reply_text(text)
 
 
-async def add_data(context: ContextTypes.DEFAULT_TYPE):
+async def add_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
     job = context.job
     url = url_adr
     response = requests.get(url)
@@ -85,8 +85,10 @@ async def add_data(context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(secret_token).build()
+    start_app_handler = CommandHandler('start_app', start_app)
     start_message_handler = CommandHandler('start_message', start_message)
     add_data_handler = CommandHandler('add_data', add_data)
+    application.add_handler(start_app_handler)
     application.add_handler(start_message_handler)
     application.add_handler(add_data_handler)
     application.run_polling()
