@@ -43,7 +43,7 @@ async def start_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.effective_message.reply_text(text)
 
 
-async def add_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def add_data(context: ContextTypes.DEFAULT_TYPE):
     job = context.job
     url = url_adr
     response = requests.get(url)
