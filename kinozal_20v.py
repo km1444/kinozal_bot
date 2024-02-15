@@ -20,7 +20,8 @@ logging.basicConfig(
 # URL_players_most_goals = 'https://45seasons.ru/api/players_most_goals/'
 # URL = 'https://45seasons.ru/api/players/'
 
-url_adr = 'https://qmxnntikcog.kinozal4me.info/top.php?sid=fP7U4sk9&j=&t=1&d=0&k=0&f=0&w=0&s=0'
+# url_adr = 'https://qmxnntikcog.kinozal4me.info/top.php?sid=fP7U4sk9&j=&t=1&d=0&k=0&f=0&w=0&s=0'
+url_adr = 'https://www.sports.ru/'
 
 # buttons = ReplyKeyboardMarkup([
 #     ['/players_most_goals', '/best_players'],
@@ -28,6 +29,7 @@ url_adr = 'https://qmxnntikcog.kinozal4me.info/top.php?sid=fP7U4sk9&j=&t=1&d=0&k
 
 
 async def start_app(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print(update.effective_message)
     chat_id = update.effective_message.chat_id
     await context.bot.send_message(
         chat_id=chat_id,
@@ -45,41 +47,50 @@ async def start_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_data(context: ContextTypes.DEFAULT_TYPE):
     job = context.job
+    # chat_id = update.effective_message.chat_id
     url = url_adr
     response = requests.get(url)
     src = response.text
-    with open('second.html', 'w') as file:
-        file.write(src)
-    with open('second.html') as file:
-        src = file.read()
+    # with open('second.html', 'w') as file:
+    #     file.write(src)
+    # with open('second.html') as file:
+    #     src = file.read()
     soup = BeautifulSoup(src, 'lxml')
-    quotes = soup.find(class_='bx1').find_all('a')
-    count = 1
-    imdb_dict = {}
-    for item in quotes:
-        item_text = item.get('title').split('/')[0]
-        item_href = 'https://qmxnntikcog.kinozal4me.info' + item.get('href')
-        req = requests.get(url=item_href)
-        src_movie = req.text
-        soup = BeautifulSoup(src_movie, 'lxml')
-        quotes_imdb = soup.find_all('a', target='_blank')
-        if quotes_imdb[1].text[:4] == 'IMDb':
-            imdb = quotes_imdb[1].text[4:7]
-            rep = '—'
-            if rep in imdb:
-                imdb = imdb.replace(rep, '0')
-            imdb_dict[item_text] = [float(imdb), item_href]
-        print(item_text)
-        count += 1
-        if count == 11:
-            break
-    imdb_dict_sort = dict(
-        sorted(imdb_dict.items(), key=lambda item: item[1], reverse=True)
-    )
-    for key, value in imdb_dict_sort.items():
-        text = f'{key} {value[0]}'
-        await context.bot.send_message(
-            chat_id=job.chat_id, text=text
+    # quotes = soup.find(class_='bx1').find_all('a')
+    quotes = soup.find(class_='super-top__title')
+    title_text = quotes.text
+    # print(title_text)
+    # count = 1
+    # imdb_dict = {}
+    # for item in quotes:
+    #     item_text = item.get('title').split('/')[0]
+    #     item_href = 'https://qmxnntikcog.kinozal4me.info' + item.get('href')
+    #     req = requests.get(url=item_href)
+    #     src_movie = req.text
+    #     soup = BeautifulSoup(src_movie, 'lxml')
+    #     quotes_imdb = soup.find_all('a', target='_blank')
+    #     if quotes_imdb[1].text[:4] == 'IMDb':
+    #         imdb = quotes_imdb[1].text[4:7]
+    #         rep = '—'
+    #         if rep in imdb:
+    #             imdb = imdb.replace(rep, '0')
+    #         imdb_dict[item_text] = [float(imdb), item_href]
+    #     print(item_text)
+    #     count += 1
+    #     if count == 11:
+    #         break
+    # imdb_dict_sort = dict(
+    #     sorted(imdb_dict.items(), key=lambda item: item[1], reverse=True)
+    # )
+    # for key, value in imdb_dict_sort.items():
+    #     text = f'{key} {value[0]}'
+    # await context.bot.send_message(
+    #     chat_id=job.chat_id, text=text
+    # )
+    await context.bot.send_message(
+            chat_id=job.chat_id,
+            # chat_id=chat_id,
+            text=title_text
         )
 
 
